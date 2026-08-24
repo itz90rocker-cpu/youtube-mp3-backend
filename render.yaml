@@ -2,8 +2,18 @@ services:
   - type: web
     name: youtube-mp3-backend
     runtime: python
+    plan: free
+
     buildCommand: |
+      apt-get update &&
+      apt-get install -y ffmpeg &&
       pip install -r requirements.txt
-      apt-get update
-      apt-get install -y ffmpeg
-    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+
+    startCommand: |
+      uvicorn main:app --host 0.0.0.0 --port $PORT
+
+    healthCheckPath: /health
+
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11
